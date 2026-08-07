@@ -28,6 +28,19 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "6e4e782e-157d-4d7e-a9b5-5163eb3f63da"
+      }
+    },
+    "owner": "gurvandelger",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/6e4e782e-157d-4d7e-a9b5-5163eb3f63da"
     }
   }
 }
