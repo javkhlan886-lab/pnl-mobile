@@ -9,6 +9,7 @@ export interface AuthUser {
   email: string;
   status: "pending" | "active" | "suspended";
   pnlLevel?: number;
+  pnlViewableUserIds?: string[];
 }
 
 export interface AuthCompany {
@@ -33,6 +34,26 @@ export async function login(email: string, password: string): Promise<AuthUser> 
 
 export async function fetchMe(): Promise<{ user: AuthUser; company: AuthCompany | null }> {
   return apiFetch("/auth/me");
+}
+
+export interface SignupInput {
+  companyName: string;
+  registerNumber: string;
+  adminName: string;
+  phone: string;
+  email: string;
+}
+
+export interface SignupResponse {
+  message: string;
+  dev?: { token: string; otp: string };
+}
+
+export async function signup(input: SignupInput): Promise<SignupResponse> {
+  return apiFetch<SignupResponse>("/auth/signup", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
 }
 
 export async function logout(): Promise<void> {
