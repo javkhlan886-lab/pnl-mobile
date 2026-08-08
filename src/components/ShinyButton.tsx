@@ -7,6 +7,16 @@ const BAND_WIDTH = 70;
 const SWEEP_MS = 1100;
 const PAUSE_MS = 900;
 
+// JSX like `+ {t.x.addButton}` passes children as an array of separate
+// string nodes (the literal "+ " and the expression's result), not one
+// combined string — so a plain `typeof children === "string"` check misses
+// it and the raw strings get rendered outside a <Text>, where React Native
+// silently drops them (blank button, no error).
+function isTextContent(children: ReactNode): boolean {
+  const items = Array.isArray(children) ? children : [children];
+  return items.length > 0 && items.every((c) => typeof c === "string" || typeof c === "number");
+}
+
 export function ShinyButton({
   children,
   onPress,
@@ -82,9 +92,7 @@ export function ShinyButton({
             />
           </Animated.View>
         )}
-        <View style={styles.content}>
-          {typeof children === "string" ? <Text style={styles.label}>{children}</Text> : children}
-        </View>
+        <View style={styles.content}>{isTextContent(children) ? <Text style={styles.label}>{children}</Text> : children}</View>
       </Animated.View>
     </TouchableWithoutFeedback>
   );
