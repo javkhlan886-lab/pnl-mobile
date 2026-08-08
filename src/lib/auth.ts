@@ -37,8 +37,9 @@ export async function fetchMe(): Promise<{ user: AuthUser; company: AuthCompany 
 }
 
 export interface SignupInput {
+  accountType: "individual" | "organization";
   companyName: string;
-  registerNumber: string;
+  registerNumber?: string;
   adminName: string;
   phone: string;
   email: string;
@@ -54,6 +55,22 @@ export async function signup(input: SignupInput): Promise<SignupResponse> {
     method: "POST",
     body: JSON.stringify(input),
   });
+}
+
+export async function forgotPassword(email: string): Promise<{ message: string; dev?: { token: string; otp: string } }> {
+  return apiFetch("/auth/forgot-password", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+}
+
+export async function resetPassword(token: string, otp: string, newPassword: string): Promise<AuthUser> {
+  const data = await apiFetch<LoginResponse>(`/auth/reset-password/${token}`, {
+    method: "POST",
+    body: JSON.stringify({ otp, newPassword }),
+  });
+  await setToken(data.token);
+  return data.user;
 }
 
 export async function logout(): Promise<void> {

@@ -70,7 +70,12 @@ export default function LoginScreen() {
           keyboardType="email-address"
         />
 
-        <Text style={styles.label}>{t.login.password}</Text>
+        <View style={styles.passwordLabelRow}>
+          <Text style={styles.label}>{t.login.password}</Text>
+          <TouchableOpacity onPress={() => router.push("/forgot-password")}>
+            <Text style={styles.forgotLink}>{t.login.forgotPasswordLink}</Text>
+          </TouchableOpacity>
+        </View>
         <TextInput
           style={styles.input}
           value={password}
@@ -133,6 +138,12 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     marginTop: 12,
   },
+  passwordLabelRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  forgotLink: { fontSize: 12, color: colors.positive, fontWeight: "600" },
   input: {
     borderWidth: 1,
     borderColor: colors.border,

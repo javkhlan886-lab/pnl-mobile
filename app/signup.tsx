@@ -17,10 +17,14 @@ import { useLocale, format } from "@/lib/i18n";
 import { colors, shadow } from "@/lib/theme";
 import { TextField } from "@/components/Inputs";
 import { ShinyButton } from "@/components/ShinyButton";
+import { ChipGroup, Field } from "@/components/FormModal";
+
+type AccountType = "individual" | "organization";
 
 export default function SignupScreen() {
   const { t } = useLocale();
   const insets = useSafeAreaInsets();
+  const [accountType, setAccountType] = useState<AccountType>("organization");
   const [companyName, setCompanyName] = useState("");
   const [registerNumber, setRegisterNumber] = useState("");
   const [adminName, setAdminName] = useState("");
@@ -30,15 +34,21 @@ export default function SignupScreen() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<SignupResponse | null>(null);
 
-  const canSubmit = companyName.trim() && registerNumber.trim() && adminName.trim() && phone.trim() && email.trim();
+  const canSubmit =
+    companyName.trim() &&
+    (accountType === "individual" || registerNumber.trim()) &&
+    adminName.trim() &&
+    phone.trim() &&
+    email.trim();
 
   async function handleSubmit() {
     setError(null);
     setLoading(true);
     try {
       const res = await signup({
+        accountType,
         companyName: companyName.trim(),
-        registerNumber: registerNumber.trim(),
+        registerNumber: accountType === "organization" ? registerNumber.trim() : undefined,
         adminName: adminName.trim(),
         phone: phone.trim(),
         email: email.trim(),
@@ -89,11 +99,24 @@ export default function SignupScreen() {
             </View>
           )}
 
+          <Field label={t.signup.accountTypeLabel}>
+            <ChipGroup
+              options={["individual", "organization"] as const}
+              value={accountType}
+              onChange={setAccountType}
+              labels={{ individual: t.signup.accountTypeIndividual, organization: t.signup.accountTypeOrganization }}
+            />
+          </Field>
+
           <Text style={styles.label}>{t.signup.companyName}</Text>
           <TextField value={companyName} onChangeText={setCompanyName} placeholder={t.signup.companyNamePlaceholder} style={styles.input} />
 
-          <Text style={styles.label}>{t.signup.registerNumber}</Text>
-          <TextField value={registerNumber} onChangeText={setRegisterNumber} placeholder={t.signup.registerNumberPlaceholder} style={styles.input} />
+          {accountType === "organization" && (
+            <>
+              <Text style={styles.label}>{t.signup.registerNumber}</Text>
+              <TextField value={registerNumber} onChangeText={setRegisterNumber} placeholder={t.signup.registerNumberPlaceholder} style={styles.input} />
+            </>
+          )}
 
           <Text style={styles.label}>{t.signup.yourName}</Text>
           <TextField value={adminName} onChangeText={setAdminName} style={styles.input} />
