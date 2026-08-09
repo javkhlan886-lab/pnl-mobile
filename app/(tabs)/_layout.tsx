@@ -70,6 +70,27 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="more"
+        options={{
+          title: t.nav.more,
+          tabBarIcon: ({ color, size }) => <Ionicons name="grid" size={size - 2} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="workforce"
+        options={{
+          title: t.nav.workforce,
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="partners"
+        options={{
+          title: t.nav.partners,
+          href: null,
+        }}
+      />
+      <Tabs.Screen
         name="admin"
         options={{
           title: t.nav.admin,
